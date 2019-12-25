@@ -1,8 +1,7 @@
-﻿using BasicShopDemo.Api.Models;
+﻿using BasicShopDemo.Api.DAO;
+using BasicShopDemo.Api.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BasicShopDemo.Api.Controllers
@@ -14,11 +13,11 @@ namespace BasicShopDemo.Api.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly BasicShopContext _context;
+        private CategoryDAO categoryDAO;
 
         public CategoriesController(BasicShopContext context)
         {
-            _context = context;
+            categoryDAO = new CategoryDAO(context);
         }
 
         /// <summary>
@@ -29,7 +28,7 @@ namespace BasicShopDemo.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
-            return await _context.Category.ToListAsync();
+            return await categoryDAO.GetAllAsync();
         }
 
         /// <summary>
@@ -41,7 +40,7 @@ namespace BasicShopDemo.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
-            var category = await _context.Category.FindAsync(id);
+            var category = await categoryDAO.GetByIdAsync(id);
 
             if (category == null)
             {
@@ -59,29 +58,21 @@ namespace BasicShopDemo.Api.Controllers
         /// <param name="category">Category data.</param>
         // PUT: api/Categories/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory([FromRoute] int id, [FromBody] Category category)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (id != category.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
+            if (!await categoryDAO.UpdateAsync(category))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
             }
 
             return NoContent();
@@ -94,10 +85,17 @@ namespace BasicShopDemo.Api.Controllers
         /// <param name="category">Category data</param>
         // POST: api/Categories
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<Category>> PostCategory([FromBody] Category category)
         {
-            _context.Category.Add(category);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!await categoryDAO.AddAsync(category))
+            {
+                return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
+            }
 
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
@@ -105,27 +103,18 @@ namespace BasicShopDemo.Api.Controllers
         /// <summary>
         /// Delete a category
         /// </summary>
-        /// <returns>The deleted category data</returns>
+        /// <returns>No Content if it was deleted correctly</returns>
         /// <param name="id">Id of the category to delete</param>
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Category>> DeleteCategory(int id)
+        public async Task<ActionResult<Category>> DeleteCategory([FromRoute] int id)
         {
-            var category = await _context.Category.FindAsync(id);
-            if (category == null)
+            if (!await categoryDAO.BorraAsync(id))
             {
-                return NotFound();
+                return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
             }
 
-            _context.Category.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return category;
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _context.Category.Any(e => e.Id == id);
+            return NoContent();
         }
     }
 }
