@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace BasicShopDemo.Api.Controllers
 {
+    /// <summary>
+    /// Services to save, modify or delete product categories
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -18,6 +21,10 @@ namespace BasicShopDemo.Api.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Get all registered categories
+        /// </summary>
+        /// <returns>All Categories</returns>
         // GET: api/Categories
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
@@ -25,6 +32,11 @@ namespace BasicShopDemo.Api.Controllers
             return await _context.Category.ToListAsync();
         }
 
+        /// <summary>
+        /// Get a category according to your Id
+        /// </summary>
+        /// <returns>Category data</returns>
+        /// <param name="id">Category Id</param>
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Category>> GetCategory(int id)
@@ -39,9 +51,13 @@ namespace BasicShopDemo.Api.Controllers
             return category;
         }
 
+        /// <summary>
+        /// Modify a category
+        /// </summary>
+        /// <returns>No Content if it was modified correctly</returns>
+        /// <param name="id">Category Id to Modify</param>
+        /// <param name="category">Category data.</param>
         // PUT: api/Categories/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCategory(int id, Category category)
         {
@@ -71,9 +87,12 @@ namespace BasicShopDemo.Api.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Register a new product category
+        /// </summary>
+        /// <returns>The data of the added category</returns>
+        /// <param name="category">Category data</param>
         // POST: api/Categories
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
@@ -83,6 +102,11 @@ namespace BasicShopDemo.Api.Controllers
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
 
+        /// <summary>
+        /// Delete a category
+        /// </summary>
+        /// <returns>The deleted category data</returns>
+        /// <param name="id">Id of the category to delete</param>
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
         public async Task<ActionResult<Category>> DeleteCategory(int id)

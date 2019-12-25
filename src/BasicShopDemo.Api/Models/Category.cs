@@ -3,17 +3,32 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BasicShopDemo.Api.Models
 {
+    /// <summary>
+    /// Register the categories of products sold by the company
+    /// </summary>
     [Table("Categories")]
     public class Category
     {
+        /// <summary>
+        /// Category Id
+        /// </summary>
+        /// <value>Id is automatically incremented</value>
         [Key]
         public int Id { get; set; }
 
+        /// <summary>
+        /// Get or set the category code
+        /// </summary>
+        /// <value>Category code</value>
         [Required]
         [Range(1, 999)]
         public int Code { get; set; }
 
-        [StringLength(80)]
+        /// <summary>
+        /// Get or set the category name
+        /// </summary>
+        /// <value>Category name</value>
+        [StringLength(50, MinimumLength = 3)]
         [Required]
         [Column(TypeName = "VARCHAR(50)")]
         public string Name { get; set; }
