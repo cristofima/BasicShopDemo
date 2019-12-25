@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BasicShopDemo.Api.Models.EntityConfigurations;
+using Microsoft.EntityFrameworkCore;
 
 namespace BasicShopDemo.Api.Models
 {
@@ -21,6 +22,11 @@ namespace BasicShopDemo.Api.Models
             {
                 optionsBuilder.UseSqlServer("Server=localhost;Database=BasicShop;User ID=sa;Password=coronadoserver2018;Trusted_Connection=True;");
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
         }
     }
 }

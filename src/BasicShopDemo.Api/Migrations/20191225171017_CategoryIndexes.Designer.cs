@@ -3,14 +3,16 @@ using BasicShopDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BasicShopDemo.Api.Migrations
 {
     [DbContext(typeof(BasicShopContext))]
-    partial class BasicShopContextModelSnapshot : ModelSnapshot
+    [Migration("20191225171017_CategoryIndexes")]
+    partial class CategoryIndexes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
