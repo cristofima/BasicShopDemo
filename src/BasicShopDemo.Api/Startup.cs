@@ -29,7 +29,11 @@ namespace BasicShopDemo.Api
             services.AddDbContext<BasicShopContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.PropertyNamingPolicy = null;
+                o.JsonSerializerOptions.DictionaryKeyPolicy = null;
+            });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
