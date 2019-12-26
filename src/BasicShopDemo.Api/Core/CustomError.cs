@@ -1,4 +1,6 @@
-﻿namespace BasicShopDemo.Api.Core
+﻿using System.Collections.Generic;
+
+namespace BasicShopDemo.Api.Core
 {
     /// <summary>
     /// Error messages
@@ -16,19 +18,21 @@
         public string Message { get; }
 
         /// <summary>
-        /// Field with error
+        /// Errors list
         /// </summary>
-        public string Field { get; }
+        public Dictionary<string, List<string>> Errors { get; }
 
         /// <param name="statusCode">Error code</param>
-        /// <param name="message">Message explaining the error</param>
-        /// <param name="field">Field with error</param>
-        public CustomError(int statusCode, string message, string field)
+        /// <param name="errors">Errors list</param>
+        public CustomError(int statusCode, Dictionary<string, List<string>> errors)
         {
             StatusCode = statusCode;
-            Message = message;
-            Field = field;
-        }
+            Errors = errors;
 
+            if (errors != null && errors.Count > 0)
+            {
+                Message = "One or more validation errors occurred.";
+            }
+        }
     }
 }

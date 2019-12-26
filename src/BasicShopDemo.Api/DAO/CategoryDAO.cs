@@ -48,19 +48,34 @@ namespace BasicShopDemo.Api.DAO
         public async Task<bool> AddAsync(Category category)
         {
             Category duplicateCategory;
+            Dictionary<string, List<string>> errors = null;
 
             duplicateCategory = context.Category.FirstOrDefault(c => c.Name == category.Name);
 
             if (duplicateCategory != null)
             {
-                customError = new CustomError(400, $"There is already a category with the name '{category.Name}'", "Name");
-                return false;
+                if (errors == null)
+                {
+                    errors = new Dictionary<string, List<string>>();
+                }
+
+                errors.Add("Name", new List<string>() { $"There is already a category with the name '{category.Name}'" });
             }
 
             duplicateCategory = context.Category.FirstOrDefault(c => c.Code == category.Code);
             if (duplicateCategory != null)
             {
-                customError = new CustomError(400, $"There is already a category with the code '{category.Code}'", "Code");
+                if (errors == null)
+                {
+                    errors = new Dictionary<string, List<string>>();
+                }
+
+                errors.Add("Code", new List<string>() { $"There is already a category with the code '{category.Code}'" });
+            }
+
+            if (errors != null && errors.Count > 0)
+            {
+                customError = new CustomError(400, errors);
                 return false;
             }
 
@@ -76,9 +91,18 @@ namespace BasicShopDemo.Api.DAO
         /// <returns></returns>
         public async Task<bool> UpdateAsync(Category category)
         {
+            Dictionary<string, List<string>> errors = null;
+
             if (!context.Category.Any(e => e.Id == category.Id))
             {
-                customError = new CustomError(400, $"The category with id '{category.Id}' does not exist", "Category");
+                if (errors == null)
+                {
+                    errors = new Dictionary<string, List<string>>();
+                }
+
+                errors.Add("Id", new List<string>() { $"The category with id '{category.Id}' does not exist" });
+                customError = new CustomError(404, errors);
+
                 return false;
             }
 
@@ -87,14 +111,28 @@ namespace BasicShopDemo.Api.DAO
             duplicateCategory = context.Category.FirstOrDefault(c => c.Name == category.Name && c.Id != category.Id);
             if (duplicateCategory != null)
             {
-                customError = new CustomError(400, $"There is already a category with the name '{category.Name}'", "Name");
-                return false;
+                if (errors == null)
+                {
+                    errors = new Dictionary<string, List<string>>();
+                }
+
+                errors.Add("Name", new List<string>() { $"There is already a category with the name '{category.Name}'" });
             }
 
             duplicateCategory = context.Category.FirstOrDefault(c => c.Code == category.Code && c.Id != category.Id);
             if (duplicateCategory != null)
             {
-                customError = new CustomError(400, $"There is already a category with the code '{category.Name}'", "Code");
+                if (errors == null)
+                {
+                    errors = new Dictionary<string, List<string>>();
+                }
+
+                errors.Add("Code", new List<string>() { $"There is already a category with the code '{category.Code}'" });
+            }
+
+            if (errors != null && errors.Count > 0)
+            {
+                customError = new CustomError(400, errors);
                 return false;
             }
 
@@ -109,12 +147,16 @@ namespace BasicShopDemo.Api.DAO
         /// </summary>
         /// <param name="id">Category Id</param>
         /// <returns></returns>
-        public async Task<bool> BorraAsync(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
             var category = await GetByIdAsync(id);
             if (category == null)
             {
-                customError = new CustomError(400, $"The category with id '{id}' does not exist, it was probably deleted by another user", "Id");
+                Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
+
+                errors.Add("Id", new List<string>() { $"The category with id '{id}' does not exist, it was probably deleted by another user" });
+
+                customError = new CustomError(404, errors);
                 return false;
             }
 

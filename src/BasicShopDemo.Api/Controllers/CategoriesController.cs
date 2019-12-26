@@ -11,6 +11,8 @@ namespace BasicShopDemo.Api.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class CategoriesController : ControllerBase
     {
         private CategoryDAO categoryDAO;
@@ -26,6 +28,7 @@ namespace BasicShopDemo.Api.Controllers
         /// <returns>All Categories</returns>
         // GET: api/Categories
         [HttpGet]
+        [ProducesResponseType(200)]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
         {
             return await categoryDAO.GetAllAsync();
@@ -38,6 +41,8 @@ namespace BasicShopDemo.Api.Controllers
         /// <param name="id">Category Id</param>
         // GET: api/Categories/5
         [HttpGet("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
             var category = await categoryDAO.GetByIdAsync(id);
@@ -58,6 +63,9 @@ namespace BasicShopDemo.Api.Controllers
         /// <param name="category">Category data.</param>
         // PUT: api/Categories/5
         [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> PutCategory([FromRoute] int id, [FromBody] Category category)
         {
             if (!ModelState.IsValid)
@@ -85,6 +93,8 @@ namespace BasicShopDemo.Api.Controllers
         /// <param name="category">Category data</param>
         // POST: api/Categories
         [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<ActionResult<Category>> PostCategory([FromBody] Category category)
         {
             if (!ModelState.IsValid)
@@ -107,9 +117,11 @@ namespace BasicShopDemo.Api.Controllers
         /// <param name="id">Id of the category to delete</param>
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
         public async Task<ActionResult<Category>> DeleteCategory([FromRoute] int id)
         {
-            if (!await categoryDAO.BorraAsync(id))
+            if (!await categoryDAO.DeleteAsync(id))
             {
                 return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
             }
