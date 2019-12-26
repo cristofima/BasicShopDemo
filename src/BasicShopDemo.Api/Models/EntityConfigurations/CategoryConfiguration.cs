@@ -7,6 +7,9 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
     {
         public void Configure(EntityTypeBuilder<Category> builder)
         {
+            builder.Property(e => e.Status)
+                .HasDefaultValue(true);
+
             builder.HasIndex(e => e.Code)
                 .HasName("UI_CategoryCode")
                 .IsUnique();

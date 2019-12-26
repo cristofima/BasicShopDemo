@@ -15,6 +15,7 @@ namespace BasicShopDemo.Api.Models
         }
 
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Product> Product { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -27,6 +28,7 @@ namespace BasicShopDemo.Api.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BasicShopDemo.Api.Models
@@ -32,5 +33,17 @@ namespace BasicShopDemo.Api.Models
         [Required]
         [Column(TypeName = "VARCHAR(50)")]
         public string Name { get; set; }
+
+        /// <summary>
+        /// Get or set the category status (Active or Inactive)
+        /// </summary>
+        /// <value>Category status</value>
+        public bool? Status { get; set; }
+
+        /// <summary>
+        /// Products list
+        /// </summary>
+        /// <value>Products</value>
+        public virtual ICollection<Product> Products { get; set; }
     }
 }
