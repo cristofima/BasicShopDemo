@@ -37,6 +37,15 @@ namespace BasicShopDemo.Api.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// Get or set the product price
+        /// </summary>
+        /// <value>Product price</value>
+        [Required]
+        [Range(0.05, 9999.99)]
+        [Column(TypeName = "DECIMAL(6,2)")]
+        public double Price { get; set; }
+
+        /// <summary>
         /// Get or set the product status (Active or Inactive)
         /// </summary>
         /// <value>Product status</value>

@@ -10,6 +10,9 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
             builder.Property(e => e.Status)
                 .HasDefaultValue(true);
 
+            builder.Property(e => e.Price)
+                .HasDefaultValue(0.05);
+
             builder.HasIndex(e => e.Code)
                 .HasName("UI_ProductCode")
                 .IsUnique();
@@ -20,6 +23,9 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
 
             builder.HasIndex(e => e.CategoryId)
              .HasName("IX_ProductCategory");
+
+            builder.HasIndex(e => e.Price)
+             .HasName("IX_ProductPrice");
 
             builder.HasOne(e => e.Category)
                     .WithMany(p => p.Products)

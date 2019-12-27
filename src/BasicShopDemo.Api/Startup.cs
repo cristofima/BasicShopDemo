@@ -33,6 +33,7 @@ namespace BasicShopDemo.Api
             {
                 o.JsonSerializerOptions.PropertyNamingPolicy = null;
                 o.JsonSerializerOptions.DictionaryKeyPolicy = null;
+                o.JsonSerializerOptions.MaxDepth = 64;
             });
 
             // Register the Swagger generator, defining 1 or more Swagger documents
