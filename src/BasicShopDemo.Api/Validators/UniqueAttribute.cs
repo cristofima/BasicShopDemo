@@ -1,4 +1,7 @@
 ﻿using BasicShopDemo.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using Pluralize.NET.Core;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -9,90 +12,34 @@ namespace BasicShopDemo.Api.Validators
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var context = (BasicShopContext)validationContext.GetService(typeof(BasicShopContext));
-
-            var model = validationContext.ObjectInstance;
+            var model = (Entity)validationContext.ObjectInstance;
+            var className = validationContext.ObjectType.Name.Split('.').Last();
             var field = validationContext.MemberName;
+            var tableName = new Pluralizer().Pluralize(className);
 
-            if (model is Product)
+            using (var command = context.Database.GetDbConnection().CreateCommand())
             {
-                var product = (Product)model;
-                if (product.Id == 0)
+                var extraCondition = string.Empty;
+
+                if (model.Id > 0)
                 {
-                    if (field.Equals("Name"))
-                    {
-                        var duplicateProduct = context.Product.FirstOrDefault(c => c.Name == product.Name);
-                        if (duplicateProduct != null)
-                        {
-                            return new ValidationResult($"There is already a Product with the name '{product.Name}'");
-                        }
-                    }
-                    else if (field.Equals("Code"))
-                    {
-                        var duplicateProduct = context.Product.FirstOrDefault(c => c.Code == product.Code);
-                        if (duplicateProduct != null)
-                        {
-                            return new ValidationResult($"There is already a Product with the code '{product.Code}'");
-                        }
-                    }
+                    extraCondition += $"AND ID <> {model.Id}";
                 }
-                else
+
+                command.CommandText = string.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' {3}", tableName, field, value, extraCondition);
+                context.Database.OpenConnection();
+
+                using (var result = command.ExecuteReader())
                 {
-                    if (field.Equals("Name"))
+                    if (result.HasRows)
                     {
-                        var duplicateProduct = context.Product.FirstOrDefault(c => c.Name == product.Name && c.Id != product.Id);
-                        if (duplicateProduct != null)
+                        while (result.Read())
                         {
-                            return new ValidationResult($"There is already a Product with the name '{product.Name}'");
-                        }
-                    }
-                    else if (field.Equals("Code"))
-                    {
-                        var duplicateProduct = context.Product.FirstOrDefault(c => c.Code == product.Code && c.Id != product.Id);
-                        if (duplicateProduct != null)
-                        {
-                            return new ValidationResult($"There is already a Product with the code '{product.Code}'");
-                        }
-                    }
-                }
-            }
-            else if (model is Category)
-            {
-                var category = (Category)model;
-                if (category.Id == 0)
-                {
-                    if (field.Equals("Name"))
-                    {
-                        var duplicateCategory = context.Category.FirstOrDefault(c => c.Name == category.Name);
-                        if (duplicateCategory != null)
-                        {
-                            return new ValidationResult($"There is already a Category with the name '{category.Name}'");
-                        }
-                    }
-                    else if (field.Equals("Code"))
-                    {
-                        var duplicateCategory = context.Category.FirstOrDefault(c => c.Code == category.Code);
-                        if (duplicateCategory != null)
-                        {
-                            return new ValidationResult($"There is already a Category with the code '{category.Code}'");
-                        }
-                    }
-                }
-                else
-                {
-                    if (field.Equals("Name"))
-                    {
-                        var duplicateCategory = context.Category.FirstOrDefault(c => c.Name == category.Name && c.Id != category.Id);
-                        if (duplicateCategory != null)
-                        {
-                            return new ValidationResult($"There is already a Category with the name '{category.Name}'");
-                        }
-                    }
-                    else if (field.Equals("Code"))
-                    {
-                        var duplicateCategory = context.Category.FirstOrDefault(c => c.Code == category.Code && c.Id != category.Id);
-                        if (duplicateCategory != null)
-                        {
-                            return new ValidationResult($"There is already a Category with the code '{category.Code}'");
+                            if (result.GetInt32(0) > 0)
+                            {
+                                return new ValidationResult(string.Format("There is already a {0} with the {1} '{2}'", className, field, value.ToString()),
+                                new List<string>() { field });
+                            }
                         }
                     }
                 }
