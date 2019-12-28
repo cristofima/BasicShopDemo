@@ -1,3 +1,4 @@
+using BasicShopDemo.Api.Filters;
 using BasicShopDemo.Api.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,7 +35,11 @@ namespace BasicShopDemo.Api
                 o.JsonSerializerOptions.PropertyNamingPolicy = null;
                 o.JsonSerializerOptions.DictionaryKeyPolicy = null;
                 o.JsonSerializerOptions.MaxDepth = 64;
-            });
+            }).AddMvcOptions(options =>
+              {
+                  options.Filters.Add(typeof(CustomExceptionFilter));
+              }
+            );
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
