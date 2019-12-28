@@ -8,15 +8,12 @@ namespace BasicShopDemo.Api.Models
     /// Register the products
     /// </summary>
     [Table("Products")]
-    public class Product
+    public class Product : Entity
     {
         /// <summary>
-        /// Product Id
+        /// Get or set the category id
         /// </summary>
-        /// <value>Id is automatically incremented</value>
-        [Key]
-        public int Id { get; set; }
-
+        /// <value>Category id</value>
         [Required]
         public int CategoryId { get; set; }
 
@@ -35,8 +32,8 @@ namespace BasicShopDemo.Api.Models
         /// <value>Product name</value>
         [Required]
         [StringLength(70, MinimumLength = 3)]
-        [Column(TypeName = "VARCHAR(70)")]
         [Unique]
+        [Column(TypeName = "VARCHAR(70)")]
         public string Name { get; set; }
 
         /// <summary>

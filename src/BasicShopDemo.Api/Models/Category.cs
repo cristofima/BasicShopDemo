@@ -9,15 +9,8 @@ namespace BasicShopDemo.Api.Models
     /// Register the categories of products sold by the company
     /// </summary>
     [Table("Categories")]
-    public class Category
+    public class Category : Entity
     {
-        /// <summary>
-        /// Category Id
-        /// </summary>
-        /// <value>Id is automatically incremented</value>
-        [Key]
-        public int Id { get; set; }
-
         /// <summary>
         /// Get or set the category code
         /// </summary>
@@ -33,8 +26,8 @@ namespace BasicShopDemo.Api.Models
         /// <value>Category name</value>
         [StringLength(50, MinimumLength = 3)]
         [Required]
-        [Column(TypeName = "VARCHAR(50)")]
         [Unique]
+        [Column(TypeName = "VARCHAR(50)")]
         public string Name { get; set; }
 
         /// <summary>
@@ -48,5 +41,11 @@ namespace BasicShopDemo.Api.Models
         /// </summary>
         /// <value>Products</value>
         public virtual ICollection<Product> Products { get; set; }
+
+        /// <summary>
+        /// Providers Category list
+        /// </summary>
+        /// <value>Providers Category</value>
+        public virtual ICollection<ProviderCategory> ProvidersCategory { get; set; }
     }
 }
