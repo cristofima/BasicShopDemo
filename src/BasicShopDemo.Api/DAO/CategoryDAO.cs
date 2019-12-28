@@ -47,31 +47,7 @@ namespace BasicShopDemo.Api.DAO
         /// <returns></returns>
         public async Task<bool> AddAsync(Category category)
         {
-            Category duplicateCategory;
             Dictionary<string, List<string>> errors = null;
-
-            duplicateCategory = context.Category.FirstOrDefault(c => c.Name == category.Name);
-
-            if (duplicateCategory != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Name", new List<string>() { $"There is already a category with the name '{category.Name}'" });
-            }
-
-            duplicateCategory = context.Category.FirstOrDefault(c => c.Code == category.Code);
-            if (duplicateCategory != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Code", new List<string>() { $"There is already a category with the code '{category.Code}'" });
-            }
 
             if (errors != null && errors.Count > 0)
             {
@@ -87,7 +63,7 @@ namespace BasicShopDemo.Api.DAO
         /// <summary>
         /// Modify a category
         /// </summary>
-        /// <param name="category">Datos de la categoria</param>
+        /// <param name="category">Category data</param>
         /// <returns></returns>
         public async Task<bool> UpdateAsync(Category category)
         {
@@ -104,30 +80,6 @@ namespace BasicShopDemo.Api.DAO
                 customError = new CustomError(404, errors);
 
                 return false;
-            }
-
-            Category duplicateCategory;
-
-            duplicateCategory = context.Category.FirstOrDefault(c => c.Name == category.Name && c.Id != category.Id);
-            if (duplicateCategory != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Name", new List<string>() { $"There is already a category with the name '{category.Name}'" });
-            }
-
-            duplicateCategory = context.Category.FirstOrDefault(c => c.Code == category.Code && c.Id != category.Id);
-            if (duplicateCategory != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Code", new List<string>() { $"There is already a category with the code '{category.Code}'" });
             }
 
             if (errors != null && errors.Count > 0)

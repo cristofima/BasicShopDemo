@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BasicShopDemo.Api.Validators;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -23,6 +24,7 @@ namespace BasicShopDemo.Api.Models
         /// <value>Category code</value>
         [Required]
         [Range(1, 999)]
+        [Unique]
         public int Code { get; set; }
 
         /// <summary>
@@ -32,6 +34,7 @@ namespace BasicShopDemo.Api.Models
         [StringLength(50, MinimumLength = 3)]
         [Required]
         [Column(TypeName = "VARCHAR(50)")]
+        [Unique]
         public string Name { get; set; }
 
         /// <summary>

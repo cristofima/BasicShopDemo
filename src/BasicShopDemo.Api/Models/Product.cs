@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BasicShopDemo.Api.Validators;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BasicShopDemo.Api.Models
@@ -25,6 +26,7 @@ namespace BasicShopDemo.Api.Models
         /// <value>Product code</value>
         [Required]
         [Range(1, int.MaxValue)]
+        [Unique]
         public int Code { get; set; }
 
         /// <summary>
@@ -34,6 +36,7 @@ namespace BasicShopDemo.Api.Models
         [Required]
         [StringLength(70, MinimumLength = 3)]
         [Column(TypeName = "VARCHAR(70)")]
+        [Unique]
         public string Name { get; set; }
 
         /// <summary>

@@ -47,31 +47,7 @@ namespace BasicShopDemo.Api.DAO
         /// <returns></returns>
         public async Task<bool> AddAsync(Product product)
         {
-            Product duplicateProduct;
             Dictionary<string, List<string>> errors = null;
-
-            duplicateProduct = context.Product.FirstOrDefault(c => c.Name == product.Name);
-
-            if (duplicateProduct != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Name", new List<string>() { $"There is already a Product with the name '{product.Name}'" });
-            }
-
-            duplicateProduct = context.Product.FirstOrDefault(c => c.Code == product.Code);
-            if (duplicateProduct != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Code", new List<string>() { $"There is already a Product with the code '{product.Code}'" });
-            }
 
             var category = context.Category.Find(product.CategoryId);
             if (category == null)
@@ -124,30 +100,6 @@ namespace BasicShopDemo.Api.DAO
                 customError = new CustomError(404, errors);
 
                 return false;
-            }
-
-            Product duplicateProduct;
-
-            duplicateProduct = context.Product.FirstOrDefault(c => c.Name == product.Name && c.Id != product.Id);
-            if (duplicateProduct != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Name", new List<string>() { $"There is already a Product with the name '{product.Name}'" });
-            }
-
-            duplicateProduct = context.Product.FirstOrDefault(c => c.Code == product.Code && c.Id != product.Id);
-            if (duplicateProduct != null)
-            {
-                if (errors == null)
-                {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Code", new List<string>() { $"There is already a Product with the code '{product.Code}'" });
             }
 
             var category = context.Category.Find(product.CategoryId);
