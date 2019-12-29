@@ -1,5 +1,7 @@
 ﻿using BasicShopDemo.Api.DAO;
 using BasicShopDemo.Api.Models;
+using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -13,7 +15,8 @@ namespace BasicShopDemo.Api.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class ProvidersController : ControllerBase
+    [ODataRoutePrefix("Providers")]
+    public class ProvidersController : ODataController
     {
         private ProviderDAO providerDAO;
 
@@ -29,6 +32,8 @@ namespace BasicShopDemo.Api.Controllers
         // GET: api/Providers
         [HttpGet]
         [ProducesResponseType(200)]
+        [EnableQuery]
+        [ODataRoute]
         public async Task<ActionResult<IEnumerable<Provider>>> GetProvider()
         {
             return await providerDAO.GetAllAsync();
@@ -42,6 +47,8 @@ namespace BasicShopDemo.Api.Controllers
         // GET: api/Providers/5
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
+        [EnableQuery]
+        [ODataRoute("({id})")]
         public async Task<ActionResult<Provider>> GetProvider(int id)
         {
             var provider = await providerDAO.GetByIdAsync(id);
