@@ -15,6 +15,7 @@ namespace BasicShopDemo.Api.Models
 		/// Provider RUC
 		/// </summary>
 		[Required]
+		[RUC]
 		[Unique]
 		[Column(TypeName = "VARCHAR(13)")]
 		public string RUC { get; set; }
@@ -41,7 +42,7 @@ namespace BasicShopDemo.Api.Models
 		/// </summary>
 		[MaxLength(50)]
 		[EmailAddress]
-		[Unique]
+		[Unique(AcceptNull = true)]
 		[Column(TypeName = "VARCHAR(50)")]
 		public string Email { get; set; }
 
@@ -50,7 +51,7 @@ namespace BasicShopDemo.Api.Models
 		/// </summary>
 		[MaxLength(20)]
 		[Phone]
-		[Unique]
+		[Unique(AcceptNull = true)]
 		[Column(TypeName = "VARCHAR(20)")]
 		public string Phone { get; set; }
 
@@ -58,6 +59,7 @@ namespace BasicShopDemo.Api.Models
 		/// Provider cellphone
 		/// </summary>
 		[MaxLength(10)]
+		[Phone]
 		[Unique]
 		[Column(TypeName = "VARCHAR(10)")]
 		public string CellPhone { get; set; }
@@ -67,7 +69,7 @@ namespace BasicShopDemo.Api.Models
 		/// </summary>
 		[MaxLength(100)]
 		[Url]
-		[Unique]
+		[Unique(AcceptNull = true)]
 		[Column(TypeName = "VARCHAR(100)")]
 		public string WebSite { get; set; }
 
