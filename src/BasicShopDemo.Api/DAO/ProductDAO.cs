@@ -52,21 +52,17 @@ namespace BasicShopDemo.Api.DAO
             var category = context.Category.Find(product.CategoryId);
             if (category == null)
             {
-                if (errors == null)
+                errors = new Dictionary<string, List<string>>
                 {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("CategoryId", new List<string>() { $"The Category with id '{product.CategoryId}' does not exist" });
+                    { "CategoryId", new List<string>() { $"The Category with id '{product.CategoryId}' does not exist" } }
+                };
             }
             else if (category.Status == false)
             {
-                if (errors == null)
+                errors = new Dictionary<string, List<string>>
                 {
-                    errors = new Dictionary<string, List<string>>();
-                }
-
-                errors.Add("Category", new List<string>() { $"The Category '{category.Name}' is INACTIVE" });
+                    { "Category", new List<string>() { $"The Category '{category.Name}' is INACTIVE" } }
+                };
             }
 
             if (errors != null && errors.Count > 0)
@@ -91,12 +87,11 @@ namespace BasicShopDemo.Api.DAO
 
             if (!context.Product.Any(e => e.Id == product.Id))
             {
-                if (errors == null)
+                errors = new Dictionary<string, List<string>>
                 {
-                    errors = new Dictionary<string, List<string>>();
-                }
+                    { "Id", new List<string>() { $"The Product with id '{product.Id}' does not exist" } }
+                };
 
-                errors.Add("Id", new List<string>() { $"The Product with id '{product.Id}' does not exist" });
                 customError = new CustomError(404, errors);
 
                 return false;
@@ -141,18 +136,19 @@ namespace BasicShopDemo.Api.DAO
         /// <returns></returns>
         public async Task<bool> DeleteAsync(int id)
         {
-            var Product = await GetByIdAsync(id);
-            if (Product == null)
+            var product = await GetByIdAsync(id);
+            if (product == null)
             {
-                Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
-
-                errors.Add("Id", new List<string>() { $"The Product with id '{id}' does not exist, it was probably deleted by another user" });
+                var errors = new Dictionary<string, List<string>>
+                {
+                    { "Id", new List<string>() { $"The Product with id '{id}' does not exist, it was probably deleted by another user" } }
+                };
 
                 customError = new CustomError(404, errors);
                 return false;
             }
 
-            context.Product.Remove(Product);
+            context.Product.Remove(product);
             await context.SaveChangesAsync();
 
             return true;

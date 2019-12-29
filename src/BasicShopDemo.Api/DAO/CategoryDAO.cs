@@ -47,14 +47,6 @@ namespace BasicShopDemo.Api.DAO
         /// <returns></returns>
         public async Task<bool> AddAsync(Category category)
         {
-            Dictionary<string, List<string>> errors = null;
-
-            if (errors != null && errors.Count > 0)
-            {
-                customError = new CustomError(400, errors);
-                return false;
-            }
-
             context.Category.Add(category);
             await context.SaveChangesAsync();
             return true;
@@ -67,24 +59,15 @@ namespace BasicShopDemo.Api.DAO
         /// <returns></returns>
         public async Task<bool> UpdateAsync(Category category)
         {
-            Dictionary<string, List<string>> errors = null;
-
             if (!context.Category.Any(e => e.Id == category.Id))
             {
-                if (errors == null)
+                var errors = new Dictionary<string, List<string>>
                 {
-                    errors = new Dictionary<string, List<string>>();
-                }
+                    { "Id", new List<string>() { $"The category with id '{category.Id}' does not exist" } }
+                };
 
-                errors.Add("Id", new List<string>() { $"The category with id '{category.Id}' does not exist" });
                 customError = new CustomError(404, errors);
 
-                return false;
-            }
-
-            if (errors != null && errors.Count > 0)
-            {
-                customError = new CustomError(400, errors);
                 return false;
             }
 
@@ -104,9 +87,10 @@ namespace BasicShopDemo.Api.DAO
             var category = await GetByIdAsync(id);
             if (category == null)
             {
-                Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
-
-                errors.Add("Id", new List<string>() { $"The category with id '{id}' does not exist, it was probably deleted by another user" });
+                var errors = new Dictionary<string, List<string>>
+                {
+                    { "Id", new List<string>() { $"The category with id '{id}' does not exist, it was probably deleted by another user" } }
+                };
 
                 customError = new CustomError(404, errors);
                 return false;
