@@ -9,6 +9,13 @@ namespace BasicShopDemo.Api.Validators
 {
     public class UniqueAttribute : ValidationAttribute
     {
+        public bool AcceptNull;
+
+        public UniqueAttribute(bool acceptNull = false)
+        {
+            AcceptNull = acceptNull;
+        }
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             var context = (BasicShopContext)validationContext.GetService(typeof(BasicShopContext));
@@ -17,28 +24,31 @@ namespace BasicShopDemo.Api.Validators
             var field = validationContext.MemberName;
             var tableName = new Pluralizer().Pluralize(className);
 
-            using (var command = context.Database.GetDbConnection().CreateCommand())
+            if (!AcceptNull && value != null)
             {
-                var extraCondition = string.Empty;
-
-                if (model.Id > 0)
+                using (var command = context.Database.GetDbConnection().CreateCommand())
                 {
-                    extraCondition += $"AND ID <> {model.Id}";
-                }
+                    var extraCondition = string.Empty;
 
-                command.CommandText = string.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' {3}", tableName, field, value, extraCondition);
-                context.Database.OpenConnection();
-
-                using (var result = command.ExecuteReader())
-                {
-                    if (result.HasRows)
+                    if (model.Id > 0)
                     {
-                        while (result.Read())
+                        extraCondition += $"AND ID <> {model.Id}";
+                    }
+
+                    command.CommandText = string.Format("SELECT COUNT(*) FROM {0} WHERE {1} = '{2}' {3}", tableName, field, value, extraCondition);
+                    context.Database.OpenConnection();
+
+                    using (var result = command.ExecuteReader())
+                    {
+                        if (result.HasRows)
                         {
-                            if (result.GetInt32(0) > 0)
+                            while (result.Read())
                             {
-                                return new ValidationResult(string.Format("There is already a {0} with the {1} '{2}'", className, field, value.ToString()),
-                                new List<string>() { field });
+                                if (result.GetInt32(0) > 0)
+                                {
+                                    return new ValidationResult(string.Format("There is already a {0} with the {1} '{2}'", className, field, value.ToString()),
+                                    new List<string>() { field });
+                                }
                             }
                         }
                     }
