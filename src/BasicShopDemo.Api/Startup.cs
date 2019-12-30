@@ -1,10 +1,14 @@
 using BasicShopDemo.Api.Filters;
 using BasicShopDemo.Api.Models;
+using GraphQL;
+using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -89,6 +93,27 @@ namespace BasicShopDemo.Api
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            // If using Kestrel:
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            // If using IIS:
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+
+            services.AddScoped<IDependencyResolver>(s =>
+                new FuncDependencyResolver(s.GetRequiredService));
+            services.AddGraphQL(x =>
+            {
+                x.ExposeExceptions = true; // Change to false for Production
+            }).AddGraphTypes(ServiceLifetime.Scoped)
+               .AddUserContextBuilder(httpContext => httpContext.User)
+               .AddDataLoader();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -113,6 +138,8 @@ namespace BasicShopDemo.Api
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseGraphQLPlayground(options: new GraphQLPlaygroundOptions());
 
             app.UseMvc(routeBuilder =>
             {
