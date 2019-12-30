@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -54,16 +55,14 @@ namespace BasicShopDemo.Api
                     formatter.SupportedMediaTypes.Add(
                         new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.mock-odata"));
                 }
-            }).AddJsonOptions(o =>
-            {
-                o.JsonSerializerOptions.PropertyNamingPolicy = null;
-                o.JsonSerializerOptions.DictionaryKeyPolicy = null;
-                o.JsonSerializerOptions.MaxDepth = 64;
             }).AddMvcOptions(options =>
               {
                   options.Filters.Add(typeof(CustomExceptionFilter));
               }
-            );
+            ).AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+            });
 
             services.AddOData();
 
