@@ -1,4 +1,5 @@
-﻿using BasicShopDemo.Api.GraphQL.Queries;
+﻿using BasicShopDemo.Api.GraphQL.Mutations;
+using BasicShopDemo.Api.GraphQL.Queries;
 using GraphQL;
 using GraphQL.Types;
 
@@ -9,6 +10,7 @@ namespace BasicShopDemo.Api.GraphQL.Schemas
         public ProviderSchema(IDependencyResolver resolver) : base(resolver)
         {
             Query = resolver.Resolve<ProviderQuery>();
+            Mutation = resolver.Resolve<ProviderMutation>();
         }
     }
 }
