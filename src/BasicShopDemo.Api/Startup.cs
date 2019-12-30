@@ -1,4 +1,5 @@
 using BasicShopDemo.Api.Filters;
+using BasicShopDemo.Api.GraphQL.Schemas;
 using BasicShopDemo.Api.Models;
 using GraphQL;
 using GraphQL.Server;
@@ -108,6 +109,7 @@ namespace BasicShopDemo.Api
 
             services.AddScoped<IDependencyResolver>(s =>
                 new FuncDependencyResolver(s.GetRequiredService));
+            services.AddScoped<ProviderSchema>();
             services.AddGraphQL(x =>
             {
                 x.ExposeExceptions = true; // Change to false for Production
@@ -139,6 +141,7 @@ namespace BasicShopDemo.Api
 
             app.UseAuthorization();
 
+            app.UseGraphQL<ProviderSchema>();
             app.UseGraphQLPlayground(options: new GraphQLPlaygroundOptions());
 
             app.UseMvc(routeBuilder =>
