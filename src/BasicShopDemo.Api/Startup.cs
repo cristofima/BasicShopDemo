@@ -41,11 +41,12 @@ namespace BasicShopDemo.Api
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            services.AddIdentityCore<ApplicationUser>(config =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(config =>
             {
                 config.SignIn.RequireConfirmedEmail = false;
                 config.User.RequireUniqueEmail = true;
                 config.Password.RequiredLength = 8;
+                config.Password.RequireNonAlphanumeric = false;
             })
               .AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();
