@@ -1,3 +1,4 @@
+using BasicShopDemo.Api.Data;
 using BasicShopDemo.Api.Filters;
 using BasicShopDemo.Api.Models;
 using Microsoft.AspNet.OData.Builder;
@@ -5,6 +6,7 @@ using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +37,18 @@ namespace BasicShopDemo.Api
 
             services.AddDbContext<BasicShopContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            services.AddIdentityCore<ApplicationUser>(config =>
+            {
+                config.SignIn.RequireConfirmedEmail = false;
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequiredLength = 8;
+            })
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders();
 
             services.AddControllers(options =>
             {
@@ -112,6 +126,7 @@ namespace BasicShopDemo.Api
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseMvc(routeBuilder =>
