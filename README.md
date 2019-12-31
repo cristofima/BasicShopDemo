@@ -28,6 +28,7 @@ Configure the database settings in appsettings.json
 To migrate to database
 ```
 update-database -Context BasicShopContext
+update-database -Context ApplicationDbContext
 ```
 
 To run the project
