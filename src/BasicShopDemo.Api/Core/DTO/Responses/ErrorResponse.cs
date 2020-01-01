@@ -2,11 +2,11 @@
 
 namespace BasicShopDemo.Api.Core.DTO.Responses
 {
-    public class ErrorCRUDResponse : BaseResponse
+    public class ErrorResponse : BaseResponse
     {
         public IEnumerable<Error> Errors { get; }
 
-        public ErrorCRUDResponse(string title, int status, IEnumerable<Error> errors = null) : base(title, status)
+        public ErrorResponse(string title, int status, IEnumerable<Error> errors = null) : base(title, status)
         {
             if (errors == null)
             {
