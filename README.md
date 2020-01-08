@@ -28,8 +28,7 @@ Configure the database and SMTP settings in appsettings.json
     "Password": "xxxxxxxxx",
     "Port": 587,
     "EnableSsl": true
-  },
-  ....
+  }
 }
 ```
 
