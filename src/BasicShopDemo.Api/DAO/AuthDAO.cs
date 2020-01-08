@@ -1,6 +1,7 @@
 ﻿using BasicShopDemo.Api.Core.DTO;
 using BasicShopDemo.Api.Core.DTO.Requests;
 using BasicShopDemo.Api.Core.DTO.Responses;
+using BasicShopDemo.Api.Core.Interfaces;
 using BasicShopDemo.Api.Data;
 using BasicShopDemo.Api.Helpers;
 using BasicShopDemo.Api.Utils;
@@ -14,11 +15,13 @@ namespace BasicShopDemo.Api.DAO
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly JwtFactory jwtFactory;
+        private readonly IEmailSender emailSender;
 
-        public AuthDAO(UserManager<ApplicationUser> userManager, JwtFactory jwtFactory)
+        public AuthDAO(UserManager<ApplicationUser> userManager, JwtFactory jwtFactory, IEmailSender emailSender)
         {
             this.userManager = userManager;
             this.jwtFactory = jwtFactory;
+            this.emailSender = emailSender;
         }
 
         public async Task<BaseResponse> LoginAsync(LoginRequest loginUser)
@@ -38,6 +41,8 @@ namespace BasicShopDemo.Api.DAO
                     var user = await this.userManager.FindByNameAsync(appUser.UserName);
                     if (user.LockoutEnd > DateUtils.GetCurrentDate())
                     {
+                        await this.emailSender.SendEmailAsync(appUser.Email, "Account locked", $"Your account has been locked. Try again after {user.LockoutEnd}.");
+
                         return new ErrorResponse($"User '{appUser.UserName}' is locked.\nTry again after {user.LockoutEnd}", 400);
                     }
 
@@ -48,6 +53,8 @@ namespace BasicShopDemo.Api.DAO
                     var user = await this.userManager.FindByNameAsync(appUser.UserName);
                     if (user.LockoutEnd > DateUtils.GetCurrentDate())
                     {
+                        await this.emailSender.SendEmailAsync(appUser.Email, "Account locked", $"Your account is locked. Try again after {user.LockoutEnd}.");
+
                         return new ErrorResponse($"User '{appUser.UserName}' is locked.\nTry again after {user.LockoutEnd}", 400);
                     }
 
@@ -56,6 +63,8 @@ namespace BasicShopDemo.Api.DAO
 
                     var tokenString = this.jwtFactory.GenerateEncodedToken(appUser.UserName, appUser.Email);
                     var expireDate = this.jwtFactory.GetExpireDate(tokenString);
+
+                    await this.emailSender.SendEmailAsync(appUser.Email, "Success Login", "Success Login");
 
                     return new LoginResponse(tokenString, "Success login", 200, expireDate);
                 }

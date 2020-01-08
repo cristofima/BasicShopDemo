@@ -1,5 +1,6 @@
 ﻿using BasicShopDemo.Api.Core.DTO.Requests;
 using BasicShopDemo.Api.Core.DTO.Responses;
+using BasicShopDemo.Api.Core.Interfaces;
 using BasicShopDemo.Api.DAO;
 using BasicShopDemo.Api.Data;
 using BasicShopDemo.Api.Helpers;
@@ -22,9 +23,9 @@ namespace BasicShopDemo.Api.Controllers
     {
         private readonly AuthDAO authDAO;
 
-        public AuthController(UserManager<ApplicationUser> userManager, JwtFactory jwtFactory)
+        public AuthController(UserManager<ApplicationUser> userManager, JwtFactory jwtFactory, IEmailSender emailSender)
         {
-            authDAO = new AuthDAO(userManager, jwtFactory);
+            authDAO = new AuthDAO(userManager, jwtFactory, emailSender);
         }
 
         /// <summary>

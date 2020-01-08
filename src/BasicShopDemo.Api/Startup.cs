@@ -1,9 +1,11 @@
 using AspNetCoreRateLimit;
 using BasicShopDemo.Api.Core.DTO;
+using BasicShopDemo.Api.Core.Interfaces;
 using BasicShopDemo.Api.Data;
 using BasicShopDemo.Api.Filters;
 using BasicShopDemo.Api.Helpers;
 using BasicShopDemo.Api.Models;
+using BasicShopDemo.Api.Services;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Formatter;
@@ -121,11 +123,14 @@ namespace BasicShopDemo.Api
             // needed to store rate limit counters and ip rules
             services.AddMemoryCache();
 
-            //load general configuration from appsettings.json
+            // load general configuration from appsettings.json
             services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
 
-            //load ip rules from appsettings.json
+            // load ip rules from appsettings.json
             services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
+
+            // load SMTP Options from appsettings.json
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("SMTP_Options"));
 
             // inject counter and rules stores
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
@@ -181,6 +186,8 @@ namespace BasicShopDemo.Api
 
             // configuration (resolvers, counter key builders)
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            services.AddScoped<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
