@@ -129,8 +129,8 @@ namespace BasicShopDemo.Api
             // load ip rules from appsettings.json
             services.Configure<IpRateLimitPolicies>(Configuration.GetSection("IpRateLimitPolicies"));
 
-            // load SMTP Options from appsettings.json
-            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("SMTP_Options"));
+            // load Email Sender Options from appsettings.json
+            services.Configure<AuthMessageSenderOptions>(Configuration.GetSection("EmailSenderOptions"));
 
             // inject counter and rules stores
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();

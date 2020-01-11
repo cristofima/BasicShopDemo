@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Mailjet.Client;
+using System.Threading.Tasks;
 
 namespace BasicShopDemo.Api.Core.Interfaces
 {
     public interface IEmailSender
     {
-        Task SendEmailAsync(string email, string subject, string message);
+        Task<MailjetResponse> SendEmailAsync(string email, string subject, string message);
     }
 }

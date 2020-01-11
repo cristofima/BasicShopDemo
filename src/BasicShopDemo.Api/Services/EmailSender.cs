@@ -1,8 +1,9 @@
 ﻿using BasicShopDemo.Api.Core.DTO;
 using BasicShopDemo.Api.Core.Interfaces;
+using Mailjet.Client;
+using Mailjet.Client.Resources;
 using Microsoft.Extensions.Options;
-using System.Net;
-using System.Net.Mail;
+using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
 namespace BasicShopDemo.Api.Services
@@ -16,27 +17,45 @@ namespace BasicShopDemo.Api.Services
             Options = optionsAccessor.Value;
         }
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public async Task<MailjetResponse> SendEmailAsync(string email, string subject, string message)
         {
-            var mailMessage = new MailMessage
+            MailjetClient client = new MailjetClient(Options.ApiKey, Options.ApiSecret)
             {
-                From = new MailAddress(Options.Username)
+                Version = ApiVersion.V3_1,
             };
 
-            mailMessage.To.Add(email);
-            mailMessage.Body = message;
-            mailMessage.IsBodyHtml = true;
-            mailMessage.BodyEncoding = System.Text.Encoding.UTF8;
-            mailMessage.Subject = subject;
-
-            var client = new SmtpClient(Options.Server)
+            MailjetRequest request = new MailjetRequest
             {
-                Port = Options.Port,
-                EnableSsl = Options.EnableSsl,
-                Credentials = new NetworkCredential(Options.Username, Options.Password)
-            };
+                Resource = Send.Resource,
+            }.Property(Send.Messages, new JArray {
+                 new JObject {
+                  {
+                   "From",
+                   new JObject {
+                    {"Email", Options.FromEmail},
+                    {"Name", Options.FromName}
+                   }
+                  }, {
+                   "To",
+                   new JArray {
+                    new JObject {
+                     {
+                      "Email",
+                      email
+                     }
+                    }
+                   }
+                  }, {
+                   "Subject",
+                    subject
+                  },{
+                   "HTMLPart",
+                   message
+                  }
+                 }
+                });
 
-            return client.SendMailAsync(mailMessage);
+            return await client.PostAsync(request);
         }
     }
 }
