@@ -4,6 +4,7 @@ using BasicShopDemo.Api.Core.Interfaces;
 using BasicShopDemo.Api.Data;
 using BasicShopDemo.Api.Filters;
 using BasicShopDemo.Api.Helpers;
+using BasicShopDemo.Api.Middlewares;
 using BasicShopDemo.Api.Models;
 using BasicShopDemo.Api.Services;
 using Microsoft.AspNet.OData.Builder;
@@ -201,6 +202,8 @@ namespace BasicShopDemo.Api
             app.UseIpRateLimiting();
 
             app.UseHttpsRedirection();
+
+            app.UseMiddleware<RequestHandlerMiddleware>();
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
