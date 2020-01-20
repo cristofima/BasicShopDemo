@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -11,7 +13,8 @@ namespace BasicShopDemo.Api.Models
     public class Log : Entity
     {
         [Required]
-        public string Headers { get; set; }
+        [Column("Headers")]
+        public string _headers { get; set; }
 
         [Required]
         [Column(TypeName = "VARCHAR(10)")]
@@ -23,7 +26,8 @@ namespace BasicShopDemo.Api.Models
 
         public string QueryString { get; set; }
 
-        public string RequestBody { get; set; }
+        [Column("RequestBody")]
+        public string _requestBody { get; set; }
 
         [Required]
         [Column(TypeName = "VARCHAR(100)")]
@@ -41,5 +45,23 @@ namespace BasicShopDemo.Api.Models
 
         [Required]
         public DateTime TransactionDate { get; set; }
+
+        [NotMapped]
+        public JObject Headers
+        {
+            get
+            {
+                return JsonConvert.DeserializeObject<JObject>(string.IsNullOrEmpty(_headers) ? "{}" : _headers);
+            }
+        }
+
+        [NotMapped]
+        public JObject RequestBody
+        {
+            get
+            {
+                return JsonConvert.DeserializeObject<JObject>(string.IsNullOrEmpty(_requestBody) ? "{}" : _requestBody);
+            }
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace BasicShopDemo.Api.Middlewares
 
         public async Task Invoke(HttpContext context, ApplicationDbContext dbDontext)
         {
-            if (!context.Request.Path.ToString().StartsWith("/api"))
+            if (!context.Request.Path.ToString().StartsWith("/api") && !context.Request.Path.ToString().StartsWith("/odata"))
             {
                 await next(context);
 
@@ -31,7 +31,7 @@ namespace BasicShopDemo.Api.Middlewares
 
             var log = new Log
             {
-                Headers = headers,
+                _headers = headers,
                 Method = context.Request.Method,
                 Path = context.Request.Path,
                 QueryString = context.Request.QueryString.Value,
@@ -42,9 +42,8 @@ namespace BasicShopDemo.Api.Middlewares
 
             context.Request.EnableBuffering();
 
-            var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
+            log._requestBody = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
-            log.RequestBody = body.ToString();
             context.Request.Body.Position = 0;
 
             var watch = Stopwatch.StartNew();
@@ -56,8 +55,8 @@ namespace BasicShopDemo.Api.Middlewares
             log.ResponseTime = watch.ElapsedMilliseconds;
             log.StatusCode = context.Response.StatusCode;
 
-            dbDontext.Log.Add(log);
-            await dbDontext.SaveChangesAsync();
+            //dbDontext.Log.Add(log);
+            //await dbDontext.SaveChangesAsync();
         }
     }
 }
