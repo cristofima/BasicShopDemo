@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using BasicShopDemo.Api.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BasicShopDemo.Api.Data
@@ -12,6 +13,7 @@ namespace BasicShopDemo.Api.Data
 
         public virtual DbSet<ApplicationUser> ApplicationUser { get; set; }
         public virtual DbSet<ApplicationRole> ApplicationRole { get; set; }
+        public virtual DbSet<Log> Log { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

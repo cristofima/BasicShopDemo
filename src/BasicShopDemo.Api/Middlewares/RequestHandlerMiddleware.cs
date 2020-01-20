@@ -55,8 +55,8 @@ namespace BasicShopDemo.Api.Middlewares
             log.ResponseTime = watch.ElapsedMilliseconds;
             log.StatusCode = context.Response.StatusCode;
 
-            //dbDontext.Log.Add(log);
-            //await dbDontext.SaveChangesAsync();
+            dbDontext.Log.Add(log);
+            await dbDontext.SaveChangesAsync();
         }
     }
 }
