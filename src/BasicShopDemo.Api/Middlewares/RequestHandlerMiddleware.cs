@@ -20,7 +20,9 @@ namespace BasicShopDemo.Api.Middlewares
 
         public async Task Invoke(HttpContext context, ApplicationDbContext dbDontext)
         {
-            if (!context.Request.Path.ToString().StartsWith("/api") && !context.Request.Path.ToString().StartsWith("/odata"))
+            var endPoint = context.Request.Path.ToString().ToLower();
+
+            if ((!endPoint.StartsWith("/api") && !endPoint.StartsWith("/odata")) || endPoint.Contains("logs"))
             {
                 await next(context);
 

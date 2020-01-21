@@ -14,6 +14,7 @@ namespace BasicShopDemo.Api.Models
     {
         [Required]
         [Column("Headers")]
+        [JsonIgnore]
         public string _headers { get; set; }
 
         [Required]
@@ -27,6 +28,7 @@ namespace BasicShopDemo.Api.Models
         public string QueryString { get; set; }
 
         [Column("RequestBody")]
+        [JsonIgnore]
         public string _requestBody { get; set; }
 
         [Required]
