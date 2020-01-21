@@ -8,8 +8,6 @@ using BasicShopDemo.Api.Middlewares;
 using BasicShopDemo.Api.Models;
 using BasicShopDemo.Api.Services;
 using Microsoft.AspNet.OData.Builder;
-using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,7 +24,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -73,9 +70,14 @@ namespace BasicShopDemo.Api
                 options.ValidForMinutes = int.Parse(jwtOptions[nameof(JwtOptions.ValidForMinutes)]);
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
                {
+                   options.RequireHttpsMetadata = false;
+                   options.SaveToken = true;
                    options.TokenValidationParameters = new TokenValidationParameters
                    {
                        ValidateIssuer = true,
@@ -90,9 +92,9 @@ namespace BasicShopDemo.Api
 
             services.AddControllers(options =>
             {
-                options.EnableEndpointRouting = false;
+                //options.EnableEndpointRouting = false;
 
-                foreach (var formatter in options.OutputFormatters
+                /*foreach (var formatter in options.OutputFormatters
                                            .OfType<ODataOutputFormatter>()
                                            .Where(it => !it.SupportedMediaTypes.Any()))
                 {
@@ -106,7 +108,7 @@ namespace BasicShopDemo.Api
                 {
                     formatter.SupportedMediaTypes.Add(
                         new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.mock-odata"));
-                }
+                }*/
             }).AddMvcOptions(options =>
               {
                   options.Filters.Add(typeof(CustomExceptionFilter));
@@ -116,7 +118,7 @@ namespace BasicShopDemo.Api
                 opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
-            services.AddOData();
+            //services.AddOData();
 
             // needed to load configuration from appsettings.json
             services.AddOptions();
@@ -137,7 +139,7 @@ namespace BasicShopDemo.Api
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
 
-            services.AddMvcCore(options =>
+            /*services.AddMvcCore(options =>
             {
                 foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
                 {
@@ -148,7 +150,7 @@ namespace BasicShopDemo.Api
                 {
                     inputFormatter.SupportedMediaTypes.Add(new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
                 }
-            });
+            });*/
 
             services.AddScoped<JwtFactory>();
 
@@ -219,11 +221,16 @@ namespace BasicShopDemo.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseMvc(routeBuilder =>
+            /* app.UseMvc(routeBuilder =>
+             {
+                 routeBuilder.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
+                 routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
+                 routeBuilder.EnableDependencyInjection();
+             });*/
+
+            app.UseEndpoints(endpoints =>
             {
-                routeBuilder.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
-                routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
-                routeBuilder.EnableDependencyInjection();
+                endpoints.MapControllers();
             });
         }
 

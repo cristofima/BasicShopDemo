@@ -18,7 +18,6 @@ namespace BasicShopDemo.Api.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly AuthDAO authDAO;
@@ -57,7 +56,7 @@ namespace BasicShopDemo.Api.Controllers
         [ProducesResponseType(401)]
         [ProducesResponseType(403)]
         [ProducesResponseType(409, Type = typeof(ErrorResponse))]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Administrator")]
         public async Task<IActionResult> Register([FromBody]RegisterUserRequest registerUserRequest)
         {
             if (!ModelState.IsValid)

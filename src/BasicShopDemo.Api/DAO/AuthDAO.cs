@@ -61,7 +61,9 @@ namespace BasicShopDemo.Api.DAO
                     await this.userManager.ResetAccessFailedCountAsync(appUser);
                     await this.userManager.SetLockoutEndDateAsync(appUser, null);
 
-                    var tokenString = this.jwtFactory.GenerateEncodedToken(appUser.UserName, appUser.Email);
+                    var roles = await this.userManager.GetRolesAsync(appUser);
+
+                    var tokenString = this.jwtFactory.GenerateEncodedToken(appUser.UserName, appUser.Email, roles);
                     var expireDate = this.jwtFactory.GetExpireDate(tokenString);
 
                     await this.emailSender.SendEmailAsync(appUser.Email, "Success Login", "Success Login");
