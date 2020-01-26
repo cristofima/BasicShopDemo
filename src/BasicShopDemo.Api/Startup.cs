@@ -7,7 +7,6 @@ using BasicShopDemo.Api.Helpers;
 using BasicShopDemo.Api.Middlewares;
 using BasicShopDemo.Api.Models;
 using BasicShopDemo.Api.Services;
-using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,7 +17,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OData.Edm;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System;
@@ -90,26 +88,8 @@ namespace BasicShopDemo.Api
                    };
                });
 
-            services.AddControllers(options =>
-            {
-                //options.EnableEndpointRouting = false;
-
-                /*foreach (var formatter in options.OutputFormatters
-                                           .OfType<ODataOutputFormatter>()
-                                           .Where(it => !it.SupportedMediaTypes.Any()))
-                {
-                    formatter.SupportedMediaTypes.Add(
-                        new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.mock-odata"));
-                }
-
-                foreach (var formatter in options.InputFormatters
-                    .OfType<ODataInputFormatter>()
-                    .Where(it => !it.SupportedMediaTypes.Any()))
-                {
-                    formatter.SupportedMediaTypes.Add(
-                        new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.mock-odata"));
-                }*/
-            }).AddMvcOptions(options =>
+            services.AddControllers()
+            .AddMvcOptions(options =>
               {
                   options.Filters.Add(typeof(CustomExceptionFilter));
               }
@@ -117,8 +97,6 @@ namespace BasicShopDemo.Api
             {
                 opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
-
-            //services.AddOData();
 
             // needed to load configuration from appsettings.json
             services.AddOptions();
@@ -138,19 +116,6 @@ namespace BasicShopDemo.Api
             // inject counter and rules stores
             services.AddSingleton<IIpPolicyStore, MemoryCacheIpPolicyStore>();
             services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
-
-            /*services.AddMvcCore(options =>
-            {
-                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
-                {
-                    outputFormatter.SupportedMediaTypes.Add(new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
-                }
-
-                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
-                {
-                    inputFormatter.SupportedMediaTypes.Add(new Microsoft.Net.Http.Headers.MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
-                }
-            });*/
 
             services.AddScoped<JwtFactory>();
 
@@ -221,27 +186,10 @@ namespace BasicShopDemo.Api
             app.UseAuthentication();
             app.UseAuthorization();
 
-            /* app.UseMvc(routeBuilder =>
-             {
-                 routeBuilder.Select().Expand().Filter().OrderBy().MaxTop(100).Count();
-                 routeBuilder.MapODataServiceRoute("odata", "odata", GetEdmModel());
-                 routeBuilder.EnableDependencyInjection();
-             });*/
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private static IEdmModel GetEdmModel()
-        {
-            var builder = new ODataConventionModelBuilder();
-            builder.EntitySet<Provider>("Providers");
-            builder.EntitySet<Category>("Categories");
-            builder.EntitySet<Product>("Products");
-
-            return builder.GetEdmModel();
         }
     }
 }

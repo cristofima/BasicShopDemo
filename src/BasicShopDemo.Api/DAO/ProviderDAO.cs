@@ -1,4 +1,6 @@
 ﻿using BasicShopDemo.Api.Core;
+using BasicShopDemo.Api.Core.DTO;
+using BasicShopDemo.Api.Extensions;
 using BasicShopDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -25,9 +27,13 @@ namespace BasicShopDemo.Api.DAO
         /// Get all providers
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Provider>> GetAllAsync()
+        public IEnumerable<Provider> GetAll(Query query)
         {
-            return await context.Provider.ToListAsync();
+            var result = context.Provider
+                .ApplyQuery(query)
+                .ToList();
+
+            return result;
         }
 
         /// <summary>

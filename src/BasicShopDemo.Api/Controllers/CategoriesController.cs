@@ -1,9 +1,8 @@
-﻿using BasicShopDemo.Api.DAO;
+﻿using BasicShopDemo.Api.Core.DTO;
+using BasicShopDemo.Api.Core.ModelBinder;
+using BasicShopDemo.Api.DAO;
 using BasicShopDemo.Api.Models;
-using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Routing;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BasicShopDemo.Api.Controllers
@@ -15,8 +14,7 @@ namespace BasicShopDemo.Api.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ODataRoutePrefix("Categories")]
-    public class CategoriesController : ODataController
+    public class CategoriesController : ControllerBase
     {
         private CategoryDAO categoryDAO;
 
@@ -32,11 +30,9 @@ namespace BasicShopDemo.Api.Controllers
         // GET: api/Categories
         [HttpGet]
         [ProducesResponseType(200)]
-        [EnableQuery]
-        [ODataRoute]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategory()
+        public ActionResult GetCategory([ModelBinder(typeof(QueryModelBinder))] Query query)
         {
-            return await categoryDAO.GetAllAsync();
+            return Ok(categoryDAO.GetAll(query));
         }
 
         /// <summary>
@@ -48,8 +44,6 @@ namespace BasicShopDemo.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
-        [EnableQuery]
-        [ODataRoute("({id})")]
         public async Task<ActionResult<Category>> GetCategory(int id)
         {
             var category = await categoryDAO.GetByIdAsync(id);

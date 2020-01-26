@@ -1,9 +1,10 @@
 ﻿using BasicShopDemo.Api.Core;
+using BasicShopDemo.Api.Core.DTO;
 using BasicShopDemo.Api.Data;
+using BasicShopDemo.Api.Extensions;
 using BasicShopDemo.Api.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace BasicShopDemo.Api.DAO
 {
@@ -15,7 +16,7 @@ namespace BasicShopDemo.Api.DAO
         /// <summary>
         /// Class for database access
         /// </summary>
-        /// <param name="context">Object for database</param>
+        /// <param name="context">Object for Database</param>
         public LogDAO(ApplicationDbContext context)
         {
             this.context = context;
@@ -25,9 +26,13 @@ namespace BasicShopDemo.Api.DAO
         /// Get all logs
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Log>> GetAllAsync()
+        public IEnumerable<Log> GetAll(Query query)
         {
-            return await context.Log.ToListAsync();
+            var result = context.Log
+                .ApplyQuery(query)
+                .ToList();
+
+            return result;
         }
     }
 }

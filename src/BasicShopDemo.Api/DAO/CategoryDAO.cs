@@ -1,4 +1,6 @@
 ﻿using BasicShopDemo.Api.Core;
+using BasicShopDemo.Api.Core.DTO;
+using BasicShopDemo.Api.Extensions;
 using BasicShopDemo.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -15,7 +17,7 @@ namespace BasicShopDemo.Api.DAO
         /// <summary>
         /// Class for database access
         /// </summary>
-        /// <param name="context">Object for database</param>
+        /// <param name="context">Object for Database</param>
         public CategoryDAO(BasicShopContext context)
         {
             this.context = context;
@@ -25,9 +27,13 @@ namespace BasicShopDemo.Api.DAO
         /// Get all categories
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Category>> GetAllAsync()
+        public IEnumerable<Category> GetAll(Query query)
         {
-            return await context.Category.ToListAsync();
+            var result = context.Category
+                .ApplyQuery(query)
+                .ToList();
+
+            return result;
         }
 
         /// <summary>

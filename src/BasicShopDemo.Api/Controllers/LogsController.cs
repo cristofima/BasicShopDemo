@@ -1,10 +1,9 @@
-﻿using BasicShopDemo.Api.DAO;
+﻿using BasicShopDemo.Api.Core.DTO;
+using BasicShopDemo.Api.Core.ModelBinder;
+using BasicShopDemo.Api.DAO;
 using BasicShopDemo.Api.Data;
-using BasicShopDemo.Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace BasicShopDemo.Api.Controllers
 {
@@ -32,9 +31,9 @@ namespace BasicShopDemo.Api.Controllers
         // GET: api/Logs
         [HttpGet]
         [ProducesResponseType(200)]
-        public async Task<ActionResult<IEnumerable<Log>>> GetLog()
+        public ActionResult GetLog([ModelBinder(typeof(QueryModelBinder))] Query query)
         {
-            return await logDAO.GetAllAsync();
+            return Ok(logDAO.GetAll(query));
         }
     }
 }
