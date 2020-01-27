@@ -1,6 +1,8 @@
 using AspNetCoreRateLimit;
 using BasicShopDemo.Api.Core.DTO;
 using BasicShopDemo.Api.Core.Interfaces;
+using BasicShopDemo.Api.Core.Interfaces.DAO;
+using BasicShopDemo.Api.DAO;
 using BasicShopDemo.Api.Data;
 using BasicShopDemo.Api.Filters;
 using BasicShopDemo.Api.Helpers;
@@ -156,6 +158,8 @@ namespace BasicShopDemo.Api
             services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
             services.AddScoped<IEmailSender, EmailSender>();
+
+            services.AddScoped<ICategoryDAO, CategoryDAO>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

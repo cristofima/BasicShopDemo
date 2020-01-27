@@ -1,6 +1,6 @@
 ﻿using BasicShopDemo.Api.Core.DTO;
+using BasicShopDemo.Api.Core.Interfaces.DAO;
 using BasicShopDemo.Api.Core.ModelBinder;
-using BasicShopDemo.Api.DAO;
 using BasicShopDemo.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -16,11 +16,11 @@ namespace BasicShopDemo.Api.Controllers
     [Consumes("application/json")]
     public class CategoriesController : ControllerBase
     {
-        private CategoryDAO categoryDAO;
+        private ICategoryDAO categoryDAO;
 
-        public CategoriesController(BasicShopContext context)
+        public CategoriesController(ICategoryDAO categoryDAO)
         {
-            categoryDAO = new CategoryDAO(context);
+            this.categoryDAO = categoryDAO;
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace BasicShopDemo.Api.Controllers
 
             if (!await categoryDAO.UpdateAsync(category))
             {
-                return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
+                return StatusCode(categoryDAO.GetCustomError().StatusCode, categoryDAO.GetCustomError());
             }
 
             return NoContent();
@@ -105,7 +105,7 @@ namespace BasicShopDemo.Api.Controllers
 
             if (!await categoryDAO.AddAsync(category))
             {
-                return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
+                return StatusCode(categoryDAO.GetCustomError().StatusCode, categoryDAO.GetCustomError());
             }
 
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
@@ -124,7 +124,7 @@ namespace BasicShopDemo.Api.Controllers
         {
             if (!await categoryDAO.DeleteAsync(id))
             {
-                return StatusCode(categoryDAO.customError.StatusCode, categoryDAO.customError);
+                return StatusCode(categoryDAO.GetCustomError().StatusCode, categoryDAO.GetCustomError());
             }
 
             return NoContent();
