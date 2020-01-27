@@ -5,14 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Data.SqlClient;
+using System;
 
 namespace BasicShopDemo.Api.Filters
 {
     public class CustomExceptionFilter : ExceptionFilterAttribute
     {
+        [Obsolete]
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly IModelMetadataProvider _modelMetadataProvider;
 
+        [Obsolete]
         public CustomExceptionFilter(IHostingEnvironment hostingEnvironment, IModelMetadataProvider modelMetadataProvider)
         {
             _hostingEnvironment = hostingEnvironment;

@@ -7,6 +7,7 @@ namespace BasicShopDemo.Api.Exceptions
     /// Class for manage SQL Server errors.
     /// For more information, visit: https://docs.microsoft.com/en-us/sql/relational-databases/errors-events/database-engine-events-and-errors?view=sql-server-ver15
     /// <see></see>
+    /// </summary>
     public class CustomSQLServerException
     {
         public string ShowSQLServerError(SqlException sqlServerError, string actualTable, string sourceClass)
