@@ -41,3 +41,7 @@ To run the project
 ```
 dotnet run
 ```
+To run the tests
+```
+dotnet test
+```
