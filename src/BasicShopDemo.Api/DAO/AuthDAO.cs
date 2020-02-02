@@ -81,7 +81,7 @@ namespace BasicShopDemo.Api.DAO
                 return new ErrorResponse($"User with email '{registerUser.Email}' already exists", 409);
             }
 
-            var password = "BasicShop2020";
+            var password = RandomPassword.Generate(8);
 
             appUser = new ApplicationUser
             {
@@ -94,6 +94,9 @@ namespace BasicShopDemo.Api.DAO
             if (identityResult.Succeeded)
             {
                 await this.userManager.AddToRoleAsync(appUser, registerUser.RoleCode.ToString("G"));
+
+                await this.emailSender.SendEmailAsync(appUser.Email, "Welcome", $"You have the {registerUser.RoleCode.ToString("G")} role and your password is {password}.");
+
                 return new SuccessResponse($"User with email '{registerUser.Email}' was created", 201);
             }
             else
