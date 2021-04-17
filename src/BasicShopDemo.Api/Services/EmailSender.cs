@@ -19,10 +19,7 @@ namespace BasicShopDemo.Api.Services
 
         public async Task<MailjetResponse> SendEmailAsync(string email, string subject, string message)
         {
-            MailjetClient client = new MailjetClient(Options.ApiKey, Options.ApiSecret)
-            {
-                Version = ApiVersion.V3_1,
-            };
+            MailjetClient client = new MailjetClient(Options.ApiKey, Options.ApiSecret);
 
             MailjetRequest request = new MailjetRequest
             {

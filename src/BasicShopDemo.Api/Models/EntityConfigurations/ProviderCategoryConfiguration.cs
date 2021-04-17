@@ -16,7 +16,7 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(e => new { e.ProviderId, e.CategoryId })
-                .HasName("UI_ProviderCategory")
+                .HasDatabaseName("UI_ProviderCategory")
                 .IsUnique();
         }
     }

@@ -11,11 +11,11 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
                 .HasDefaultValue(true);
 
             builder.HasIndex(e => e.Code)
-                .HasName("UI_CategoryCode")
+                .HasDatabaseName("UI_CategoryCode")
                 .IsUnique();
 
             builder.HasIndex(e => e.Name)
-                .HasName("UI_CategoryName")
+                .HasDatabaseName("UI_CategoryName")
                 .IsUnique();
         }
     }

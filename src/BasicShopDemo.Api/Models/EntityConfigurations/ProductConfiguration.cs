@@ -14,18 +14,18 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
                 .HasDefaultValue(0.05);
 
             builder.HasIndex(e => e.Code)
-                .HasName("UI_ProductCode")
+                .HasDatabaseName("UI_ProductCode")
                 .IsUnique();
 
             builder.HasIndex(e => e.Name)
-                .HasName("UI_ProductName")
+                .HasDatabaseName("UI_ProductName")
                 .IsUnique();
 
             builder.HasIndex(e => e.CategoryId)
-             .HasName("IX_ProductCategory");
+             .HasDatabaseName("IX_ProductCategory");
 
             builder.HasIndex(e => e.Price)
-             .HasName("IX_ProductPrice");
+             .HasDatabaseName("IX_ProductPrice");
 
             builder.HasOne(e => e.Category)
                     .WithMany(p => p.Products)

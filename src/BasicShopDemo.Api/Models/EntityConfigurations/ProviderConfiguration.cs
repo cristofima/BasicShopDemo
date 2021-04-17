@@ -11,30 +11,30 @@ namespace BasicShopDemo.Api.Models.EntityConfigurations
                 .HasDefaultValue(true);
 
             builder.HasIndex(e => e.RUC)
-                 .HasName("UI_ProviderRUC")
+                 .HasDatabaseName("UI_ProviderRUC")
                  .IsUnique();
 
             builder.HasIndex(e => e.BusinessName)
-                 .HasName("UI_ProviderBusinessName")
+                 .HasDatabaseName("UI_ProviderBusinessName")
                  .IsUnique();
 
             builder.HasIndex(e => e.Email)
-                .HasName("UI_ProviderEmail")
+                .HasDatabaseName("UI_ProviderEmail")
                 .IsUnique()
                 .HasFilter("([Email] IS NOT NULL)");
 
             builder.HasIndex(e => e.Phone)
-               .HasName("UI_ProviderPhone")
+               .HasDatabaseName("UI_ProviderPhone")
                .IsUnique()
                .HasFilter("([Phone] IS NOT NULL)");
 
             builder.HasIndex(e => e.CellPhone)
-               .HasName("UI_ProviderCellPhone")
+               .HasDatabaseName("UI_ProviderCellPhone")
                .IsUnique()
                .HasFilter("([CellPhone] IS NOT NULL)");
 
             builder.HasIndex(e => e.WebSite)
-               .HasName("UI_ProviderWebSite")
+               .HasDatabaseName("UI_ProviderWebSite")
                .IsUnique()
                .HasFilter("([WebSite] IS NOT NULL)");
         }
